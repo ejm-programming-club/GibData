@@ -4,21 +4,21 @@
 *Gib Data* sorts and sifts past IB results. You might have wondered, in your
 school: 
 
-> * Do students generally do better in their HL classes compared to their SL 
+* Do students generally do better in their HL classes compared to their SL 
 classes? Are there trends in terms of taking more languages at HL vs. taking 
 more math or science classes at HL?
-> * Even though we don't have "filières" as they always have in the French 
+* Even though we don't have "filières" as they always have in the French 
 Baccalaureate (S, L, ES...) are there trends in our students' subject choices 
 that, in fact, show such a classification in IB students? 
-> * Do students who score well on their TOK also score well in other 
-essay-based subjects such as languages or history (and vice-versa, do science 
-and math students score more poorly on TOK in general?)
-> * Are there certain component results that don't fit the rest of the data?  
-For example, do French B orals seem low compared to the other components such 
-as the written task or the exam papers? 
-> * Do students who do well on their EE also do equally as well in that 
-subject?  Are there certain subjects where the EE results don't match the 
-results for the rest of the class? 
+* Do students who score well on their TOK also score well in other essay-based 
+subjects such as languages or history (and vice-versa, do science and math 
+students score more poorly on TOK in general?)
+* Are there certain component results that don't fit the rest of the data? For 
+example, do French B orals seem low compared to the other components such as 
+the written task or the exam papers? 
+* Do students who do well on their EE also do equally as well in that subject? 
+Are there certain subjects where the EE results don't match the results for 
+the rest of the class? 
 
 
 
@@ -56,12 +56,12 @@ the privacy policy stated above.
 
 Here is some useful information concerning `data/c2018.csv`:
 
-> * Registration number is the ID of the student whose name has been removed.  
+* Registration number is the ID of the student whose name has been removed.  
 This should be used as a key field and should not be deleted!
-> * Component grade is out of 7 - a "component" is something a grade is awarded 
+* Component grade is out of 7 - a "component" is something a grade is awarded 
 for such as a Paper 2, an IA, an oral, etc. 
-> * Scaled total mark is out of 100 for most subjects.  It's basically 100%.  
+* Scaled total mark is out of 100 for most subjects.  It's basically 100%.  
 Exceptions: TOK (out of 30) and the EE (out of 34). 
-> * Be aware of the danger of analyzing small data sets.  If there are only 5 
+* Be aware of the danger of analyzing small data sets.  If there are only 5 
 or fewer students in a sample category you are analyzing, it's difficult to see 
 any trends.
