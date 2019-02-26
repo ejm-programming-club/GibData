@@ -89,6 +89,11 @@ class Data:
             if i_id == i_student_id:
                 set_subjects.add(row['Subject'])
 
+        # for one person taking World Studies, pop this item
+        # TODO should find better way to handle this
+        if 'WORLD STUDIES' in set_subjects:
+            set_subjects.remove('WORLD STUDIES')
+
         l_student_subjects = list(set_subjects)
         return l_student_subjects
     #
@@ -323,6 +328,8 @@ class CleanData:
         self.Da_data = Data(df_data)
         self.Da_data.get_all_student_ids()
 
+        self.l_students = self.Da_data.l_students
+
         # stores the conversion from EE
         # and TOK grades into the 3
         # additional core points
@@ -413,10 +420,10 @@ class CleanData:
         """
 
         self.d_students = {i_id: {} for i_id in
-                           self.Da_data.l_students}
+                           self.l_students}
 
         # for every student:
-        for i_student_id in self.Da_data.l_students:
+        for i_student_id in self.l_students:
 
             print('Processing student %s' % i_student_id)
 
@@ -447,7 +454,6 @@ class CleanData:
                 raise ValueError('CleanData: unexpected letter grades for EE and TOK: %s' % s_lttrs)
             else:
                 self.d_students[i_student_id]['core_pt'] = self.d_core_points["".join(sorted(s_lttrs))]
-
     #
 
     def get_students_doing(self, s_subject):
