@@ -1,4 +1,3 @@
-# python3
 
 import os
 import pprint
