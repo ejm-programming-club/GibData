@@ -1,7 +1,7 @@
 import os
 import json
-import numpy as np
 import pandas as pd
+from typing import *
 from tqdm import tqdm
 
 
@@ -14,7 +14,8 @@ class Data:
     The class will be used by the class
     CleanData to organise this extracted data.
     """
-    def __init__(self, df_data):
+
+    def __init__(self, df_data: pd.DataFrame):
         self.df_data = df_data
 
         self.l_students = []
@@ -33,9 +34,8 @@ class Data:
         if list(self.df_data) != l_expected_headers:
             raise ValueError('Data: Headers are not correct, they should be the following:\n%s'
                              % l_expected_headers)
-    #
 
-    def get_all_student_ids(self):
+    def get_all_student_ids(self) -> List[int]:
         """
         Gets all the students' ID numbers,
         which are each integers.
@@ -50,9 +50,8 @@ class Data:
                 raise TypeError('get_all_student_ids: Student IDs must be integers')
 
         return self.l_students
-    #
 
-    def get_student_school(self, i_student_id):
+    def get_student_school(self, i_student_id: int) -> str:
         """
         Gets the student's school ID from dataframe
         :param i_student_id: integer student ID
@@ -72,9 +71,8 @@ class Data:
             raise ValueError("get_student_school: unexpected results for student's school ID")
 
         return s_skl
-    #
 
-    def get_student_subjects(self, i_student_id):
+    def get_student_subjects(self, i_student_id: int) -> List[str]:
         """
         Gets all the subjects done by student with
         ID number i_student_id.
@@ -90,9 +88,8 @@ class Data:
 
         l_student_subjects = list(set_subjects)
         return l_student_subjects
-    #
 
-    def get_student_subject_info(self, i_student_id, s_subject):
+    def get_student_subject_info(self, i_student_id: int, s_subject: str) -> Dict[str, Union[str, int, Dict]]:
         """
         Gets the information about the student
         taking the particular subject.
@@ -164,19 +161,18 @@ class Data:
                 # component grade
                 try:
                     d_component['grade'] = int(row['Component grade'])
-                except:
+                except ValueError:
                     d_component['grade'] = None
                 # component mark
                 try:
                     d_component['mark'] = int(row['Component mark'])
-                except:
+                except ValueError:
                     d_component['mark'] = None
                 d_subject[s_component] = d_component
 
         return d_subject
-    #
 
-    def get_student_EE_info(self, i_student_id):
+    def get_student_EE_info(self, i_student_id: int) -> Dict[str, Union[str, int]]:
         """
         Gets the information about TOK for
         particular student
@@ -219,13 +215,12 @@ class Data:
                 # once the correct row is found, for loop must break
                 break
         else:
-            # if student's EE doesn't exist... FIXME if Damon gives us new data
+            # if student's EE doesn't exist...
             d_ee = {'subject': 'NONE', 'letter_grade': 'E', 'total_mark': 0, 'language': 'NONE'}
 
         return d_ee
-    #
 
-    def get_student_TOK_info(self, i_student_id):
+    def get_student_TOK_info(self, i_student_id: int) -> Dict[str, Union[str, int, Dict]]:
         """
         Gets the information about TOK for
         particular student
@@ -297,14 +292,12 @@ class Data:
                 if 'presentation' in d_tok and 'essay' in d_tok:
                     break
         else:
-            # if student's TOK doesn't exist... FIXME if Damon gives us new data
+            # if student's TOK doesn't exist...
             d_tok = {'letter_grade': 'E', 'total_mark': 0, 'language': 'NONE',
-                    'presentation': {'mark': 0, 'letter_grade': 'E'},
-                    'essay': {'mark': 0, 'letter_grade': 'E'}}
+                     'presentation': {'mark': 0, 'letter_grade': 'E'},
+                     'essay': {'mark': 0, 'letter_grade': 'E'}}
 
         return d_tok
-    #
-#
 
 
 class CleanData:
@@ -316,36 +309,32 @@ class CleanData:
 
     """
 
-    def __init__(self, df_data):
-
-        self.df_data = df_data
-        self.Da_data = Data(df_data)
-        self.Da_data.get_all_student_ids()
-
-        self.l_students = self.Da_data.l_students
+    def __init__(self, d_students: Dict[int, Dict]):
+        # See from_df method below for the format
+        self.d_students = d_students
 
         # stores the conversion from EE
         # and TOK grades into the 3
         # additional core points
-        # TODO find better way to do this
         self.d_core_points = {
             "AA": 3,
             "AB": 3,
             "AC": 2,
             "AD": 2,
-            "AE": 0,  # not sure
             "BB": 2,
             "BC": 1,
             "BD": 1,
-            "BE": 0,  # not sure
             "CC": 1,
             "CD": 0,
-            "CE": 0,  # not sure
             "DD": 0,
-            "DE": 0,  # not sure
-            "EE": 0,  # not sure
         }
 
+    @classmethod
+    def from_df(cls, df_data: pd.DataFrame) -> 'CleanData':
+        Da_data = Data(df_data)
+        Da_data.get_all_student_ids()  # check IDs
+
+        l_students = Da_data.l_students
 
         # Organises the data into dicts
         # of dicts as explained below:
@@ -412,44 +401,47 @@ class CleanData:
             for example 'PAPER ONE'
 
         """
+        self = cls({})
 
-        self.d_students = {i_id: {} for i_id in
-                           self.l_students}
+        self.d_students = {i_id: {} for i_id in l_students}
 
         # for every student:
-        for i_student_id in tqdm(self.l_students):
+        for i_student_id in tqdm(l_students):
 
             # school number
-            self.d_students[i_student_id]['school'] = self.Da_data.get_student_school(i_student_id)
+            self.d_students[i_student_id]['school'] = Da_data.get_student_school(i_student_id)
 
-            l_subjects = self.Da_data.get_student_subjects(i_student_id)
+            l_subjects = Da_data.get_student_subjects(i_student_id)
 
             # for every subject student takes:
             for s_subject in l_subjects:
                 if s_subject != "THEORY OF KNOWLEDGE.":
-                    self.d_students[i_student_id][s_subject] = self.Da_data.get_student_subject_info(i_student_id,
-                                                                                                     s_subject)
+                    self.d_students[i_student_id][s_subject] = Da_data.get_student_subject_info(i_student_id,
+                                                                                                s_subject)
 
             # EE info
-            self.d_students[i_student_id]['EE'] = self.Da_data.get_student_EE_info(i_student_id)
+            self.d_students[i_student_id]['EE'] = Da_data.get_student_EE_info(i_student_id)
 
             # TOK info
-            self.d_students[i_student_id]['TOK'] = self.Da_data.get_student_TOK_info(i_student_id)
+            self.d_students[i_student_id]['TOK'] = Da_data.get_student_TOK_info(i_student_id)
 
             # core points (number of points gained from TOK and EE, out of 3)
             s_ee_lttr = self.d_students[i_student_id]['EE']['letter_grade']
             s_tok_lttr = self.d_students[i_student_id]['TOK']['letter_grade']
 
             # letter grades of both EE and TOK put together like 'BC' or 'AD'
-            s_lttrs = '%s%s' % (s_ee_lttr, s_tok_lttr)
+            s_lttrs = s_ee_lttr + s_tok_lttr
             # raise error
             if "".join(sorted(s_lttrs)) not in self.d_core_points:
-                raise ValueError('CleanData: unexpected letter grades for EE and TOK: %s' % s_lttrs)
+                del self.d_students[i_student_id]
+                print(f'CleanData: unexpected letter grades for EE and TOK: {s_lttrs!r};\n'
+                      f'Ignoring candidate {i_student_id}')
             else:
                 self.d_students[i_student_id]['core_pt'] = self.d_core_points["".join(sorted(s_lttrs))]
-    #
 
-    def get_students_doing(self, s_subject):
+        return self
+
+    def get_students_doing(self, s_subject: str) -> List[int]:
         """
         Gets the ID numbers of the students
         doing a particular subject
@@ -461,9 +453,8 @@ class CleanData:
             if s_subject in self.d_students[i_student]:
                 l_students_doing.append(i_student)
         return l_students_doing
-    #
 
-    def get_student_grade_out_of_42(self, i_student):
+    def get_student_grade_out_of_42(self, i_student: int) -> int:
         """
         Gets the total grade (out of 42)
         of a particular student.
@@ -472,14 +463,13 @@ class CleanData:
         :return: integer grade of 42
         """
         total_grade = 0
-        for subject in self.d_students:
+        for subject in self.d_students[i_student]:
             if subject in ('school', 'EE', 'TOK', 'core_pt'):
                 continue
-            total_grade += self.d_students[subject]['grade']
+            total_grade += self.d_students[i_student][subject]['grade']
         return total_grade
-    #
 
-    def get_student_grade_out_of_45(self, i_student):
+    def get_student_grade_out_of_45(self, i_student: int) -> int:
         """
         Gets the total grade (out of 45)
         of a particular student.
@@ -494,15 +484,12 @@ class CleanData:
             total_grade += self.d_students[i_student][subject]['grade']
         total_grade += self.d_students[i_student]['core_pt']
         return total_grade
-    #
 
     def print_dict(self):
         """
         Prints all students' information dictionary
         """
         print(self.d_students)
-    #
-#
 
 
 if __name__ == '__main__':
@@ -514,7 +501,7 @@ if __name__ == '__main__':
 
     df_data = pd.read_csv(s_data_fname)
 
-    CD_ib2018 = CleanData(df_data)
+    CD_ib2018 = CleanData.from_df(df_data)
 
     # Cache processed data
     with open(os.path.join(s_path_data, 'cached_data.json'), 'w') as f:
