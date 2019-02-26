@@ -465,7 +465,23 @@ class CleanData:
         return l_students_doing
     #
 
-    def total_grade(self, i_student):
+    def get_student_grade_out_of_42(self, i_student):
+        """
+        Gets the total grade (out of 42)
+        of a particular student.
+        Requires self.
+        :param i_student: student ID num
+        :return: integer grade of 42
+        """
+        total_grade = 0
+        for subject in self.d_students:
+            if subject in ('school', 'EE', 'TOK', 'core_pt'):
+                continue
+            total_grade += self.d_students[subject]['grade']
+        return total_grade
+    #
+
+    def get_student_grade_out_of_45(self, i_student):
         """
         Gets the total grade (out of 45)
         of a particular student.
@@ -473,12 +489,18 @@ class CleanData:
         :param i_student: student ID num
         :return: integer grade of 45
         """
-        pass
+        total_grade = 0
+        for subject in self.d_students[i_student]:
+            if subject in ('school', 'EE', 'TOK', 'core_pt'):
+                continue
+            total_grade += self.d_students[i_student][subject]['grade']
+        total_grade += self.d_students[i_student]['core_pt']
+        return total_grade
     #
 
     def print_dict(self):
         """
-        Pretty prints all students' information dictionary
+        Prints all students' information dictionary
         """
         print(self.d_students)
     #
