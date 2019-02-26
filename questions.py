@@ -8,6 +8,14 @@ from data_cleaner import CleanData
 
 
 def heatmap(na_data, f_vline_pos, ylab, xlab):
+    """
+    Makes a heatmap
+
+    :param na_data: rectangular ndarray matrix
+    :param f_vline_pos: line separating 2 things being compared
+    :param ylab: label on y-axis
+    :param xlab: label on x-axis
+    """
 
     fig, ax = plt.subplots()
     im = ax.imshow(na_data)
