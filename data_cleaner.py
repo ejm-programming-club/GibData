@@ -1,8 +1,8 @@
-
-
 import os
+import json
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 
 class Data:
@@ -417,9 +417,7 @@ class CleanData:
                            self.l_students}
 
         # for every student:
-        for i_student_id in self.l_students:
-
-            print('Processing student %s' % i_student_id)
+        for i_student_id in tqdm(self.l_students):
 
             # school number
             self.d_students[i_student_id]['school'] = self.Da_data.get_student_school(i_student_id)
@@ -429,7 +427,8 @@ class CleanData:
             # for every subject student takes:
             for s_subject in l_subjects:
                 if s_subject != "THEORY OF KNOWLEDGE.":
-                    self.d_students[i_student_id][s_subject] = self.Da_data.get_student_subject_info(i_student_id, s_subject)
+                    self.d_students[i_student_id][s_subject] = self.Da_data.get_student_subject_info(i_student_id,
+                                                                                                     s_subject)
 
             # EE info
             self.d_students[i_student_id]['EE'] = self.Da_data.get_student_EE_info(i_student_id)
@@ -517,4 +516,6 @@ if __name__ == '__main__':
 
     CD_ib2018 = CleanData(df_data)
 
-    print(CD_ib2018.d_students[1])
+    # Cache processed data
+    with open(os.path.join(s_path_data, 'cached_data.json'), 'w') as f:
+        json.dump(CD_ib2018.d_students, f)
