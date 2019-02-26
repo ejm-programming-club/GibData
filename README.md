@@ -18,7 +18,15 @@ example, do French B orals seem low compared to the other components such as
 the written task or the exam papers? 
 * Do students who do well on their EE also do equally as well in that subject? 
 Are there certain subjects where the EE results don't match the results for 
-the rest of the class? 
+the rest of the class?
+* What is the strength of correlation between the EE results and the overall score.
+In other words, do students who get 38+ also get A's on their EE's? And do 
+students who are below 28 also scoring D's? Is there a correlation between
+TOK and the EE. Do students who do well in one tend to do well in the other?
+* Is there a correlation between Chemistry Paper 2 results and the IA results?
+
+**Ideally, it would be great if we had a way of entering our own questions**
+**and seeing how the data responds.**
 
 
 
