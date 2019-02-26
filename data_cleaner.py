@@ -34,6 +34,11 @@ class Data:
         if list(self.df_data) != l_expected_headers:
             raise ValueError('Data: Headers are not correct, they should be the following:\n%s'
                              % l_expected_headers)
+        self.get_all_student_ids()
+
+        self._d_rows: Dict[int, List] = {i_id: [] for i_id in self.l_students}
+        for idx, row in self.df_data.iterrows():
+            self._d_rows[row['Registration number']].append(row)
 
     def get_all_student_ids(self) -> List[int]:
         """
@@ -58,19 +63,9 @@ class Data:
         :return: string of the school ID
         """
         # name of school / school ID
-        s_skl = ''
-
-        for idx, row in self.df_data.iterrows():
-            i_id = row['Registration number']
-            if i_id == i_student_id:
-                s_skl = str(row['School'])
-                break
-
-        # if s_skl is still empty string
-        if not s_skl:
-            raise ValueError("get_student_school: unexpected results for student's school ID")
-
-        return s_skl
+        if i_student_id in self._d_rows and self._d_rows[i_student_id]:
+            return str(self._d_rows[i_student_id][0]['School'])
+        raise ValueError("get_student_school: unexpected results for student's school ID")
 
     def get_student_subjects(self, i_student_id: int) -> List[str]:
         """
@@ -81,9 +76,8 @@ class Data:
         """
         set_subjects = set()
 
-        for idx, row in self.df_data.iterrows():
-            i_id = row['Registration number']
-            if i_id == i_student_id and row['Level'] != 'EE':
+        for row in self._d_rows[i_student_id]:
+            if row['Level'] != 'EE':
                 set_subjects.add(row['Subject'])
 
         l_student_subjects = list(set_subjects)
@@ -124,10 +118,9 @@ class Data:
         # dictionary to fill in
         d_subject = {}
 
-        for idx, row in self.df_data.iterrows():
-            i_id = row['Registration number']
+        for row in self._d_rows[i_student_id]:
             s_sub = row['Subject']
-            if i_id == i_student_id and s_sub == s_subject:
+            if s_sub == s_subject:
 
                 # level at which subject is taken
                 # standard or higher (SL or HL)
@@ -191,7 +184,6 @@ class Data:
         # dictionary to fill in
         d_ee = {}
 
-        # TODO find simpler way using pandas df
         for idx, row in self.df_data.iterrows():
             i_id = row['Registration number']
             s_lvl = row['Level']
@@ -250,11 +242,9 @@ class Data:
         # name of subject
         s_subject = 'THEORY OF KNOWLEDGE.'
 
-        # TODO find simpler way using pandas df
-        for idx, row in self.df_data.iterrows():
-            i_id = row['Registration number']
+        for row in self._d_rows[i_student_id]:
             s_sub = row['Subject']
-            if i_id == i_student_id and s_sub == s_subject:
+            if s_sub == s_subject:
 
                 # get letter grade
                 s_lttr = row['Subject grade']
@@ -332,7 +322,6 @@ class CleanData:
     @classmethod
     def from_df(cls, df_data: pd.DataFrame) -> 'CleanData':
         Da_data = Data(df_data)
-        Da_data.get_all_student_ids()  # check IDs
 
         l_students = Da_data.l_students
 
