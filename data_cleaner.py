@@ -301,7 +301,8 @@ class CleanData:
 
     def __init__(self, d_students: Dict[int, Dict]):
         # See from_df method below for the format
-        self.d_students = d_students
+        self.d_students = {int(k): v for k, v in d_students.items()}
+        self.l_students = list(self.d_students.keys())
 
         # stores the conversion from EE
         # and TOK grades into the 3

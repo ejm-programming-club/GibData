@@ -1,11 +1,13 @@
 import os
+import json
 import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 from data_cleaner import CleanData
 
+plt.rcParams['figure.figsize'] = (50, 25)
 
-def heatmap(na_data, f_vline_pos, ylab, xlab):
+
+def heatmap(na_data, f_vline_pos, ylab, xlab, yticks=None):
     """
     Makes a heatmap
 
@@ -35,11 +37,13 @@ def heatmap(na_data, f_vline_pos, ylab, xlab):
     # Loop over data dimensions and create text annotations.
     for i in range(na_data.shape[0]):
         for j in range(na_data.shape[1]):
-            text = ax.text(j, i, na_data[i, j],
+            text = ax.text(j, i, int(na_data[i, j]) if not np.isnan(na_data[i, j]) else '',
                            ha="center", va="center", color="w")
 
-    plt.show()
-#
+    if yticks is not None:
+        plt.yticks(*yticks)
+
+    return fig
 
 
 class Questions:
@@ -48,10 +52,10 @@ class Questions:
     about the data. It uses CleanData class
     from data_cleaner.py.
     """
-    def __init__(self, df_data):
 
-        self.CD = CleanData(df_data)
-    #
+    def __init__(self, d_data):
+
+        self.CD = CleanData(d_data)
 
     def q1_1(self):
         """
@@ -68,20 +72,27 @@ class Questions:
         l_hls = []
         l_sls = []
 
-        for i_student in self.CD.l_students:
+        ytick_ticks = []
+        ytick_labels = []
+        for i_student in range(min(self.CD.l_students), max(self.CD.l_students) + 1):
             # HL and SL marks for student
             l_hl_subs = []
             l_sl_subs = []
-            for s_subject in self.CD.d_students[i_student]:
-                if s_subject in ('school', 'EE', 'TOK', 'core_pt'):
-                    # for now we only want the actual subjects
-                    continue
 
-                # append the total marks gained in that subject
-                if self.CD.d_students[i_student][s_subject]['level'] == 'HL':
-                    l_hl_subs.append(self.CD.d_students[i_student][s_subject]['total_mark'])
-                if self.CD.d_students[i_student][s_subject]['level'] == 'SL':
-                    l_sl_subs.append(self.CD.d_students[i_student][s_subject]['total_mark'])
+            if i_student in self.CD.l_students:
+                ytick_labels.append(i_student)
+                ytick_ticks.append(len(l_hls))
+
+                for s_subject in self.CD.d_students[i_student]:
+                    if s_subject in ('school', 'EE', 'TOK', 'core_pt'):
+                        # for now we only want the actual subjects
+                        continue
+
+                    # append the total marks gained in that subject
+                    if self.CD.d_students[i_student][s_subject]['level'] == 'HL':
+                        l_hl_subs.append(self.CD.d_students[i_student][s_subject]['total_mark'])
+                    if self.CD.d_students[i_student][s_subject]['level'] == 'SL':
+                        l_sl_subs.append(self.CD.d_students[i_student][s_subject]['total_mark'])
 
             # make the l_hls and l_sls into rectangular matrices
             # make it pretty and symmetrical
@@ -95,8 +106,9 @@ class Questions:
 
         na_sl_vs_hls = np.column_stack((np.array(l_sls), np.array(l_hls)))
 
-        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL  HL')
-    #
+        # using the function defined above
+        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL          HL', yticks=(ytick_ticks, ytick_labels))
+        plt.savefig('plots/q1_1.png', dpi=160, bbox_inches='tight')
 
     def q1_2(self):
         """
@@ -113,20 +125,27 @@ class Questions:
         l_hls = []
         l_sls = []
 
-        for i_student in self.CD.l_students:
+        ytick_ticks = []
+        ytick_labels = []
+        for i_student in range(min(self.CD.l_students), max(self.CD.l_students) + 1):
             # HL and SL marks for student
             l_hl_subs = []
             l_sl_subs = []
-            for s_subject in self.CD.d_students[i_student]:
-                if s_subject in ('school', 'EE', 'TOK', 'core_pt'):
-                    # for now we only want the actual subjects
-                    continue
 
-                # append the total marks gained in that subject
-                if self.CD.d_students[i_student][s_subject]['level'] == 'HL':
-                    l_hl_subs.append(self.CD.d_students[i_student][s_subject]['grade'])
-                if self.CD.d_students[i_student][s_subject]['level'] == 'SL':
-                    l_sl_subs.append(self.CD.d_students[i_student][s_subject]['grade'])
+            if i_student in self.CD.l_students:
+                ytick_labels.append(i_student)
+                ytick_ticks.append(len(l_hls))
+
+                for s_subject in self.CD.d_students[i_student]:
+                    if s_subject in ('school', 'EE', 'TOK', 'core_pt'):
+                        # for now we only want the actual subjects
+                        continue
+
+                    # append the total marks gained in that subject
+                    if self.CD.d_students[i_student][s_subject]['level'] == 'HL':
+                        l_hl_subs.append(self.CD.d_students[i_student][s_subject]['grade'])
+                    if self.CD.d_students[i_student][s_subject]['level'] == 'SL':
+                        l_sl_subs.append(self.CD.d_students[i_student][s_subject]['grade'])
 
             # make the l_hls and l_sls into rectangular matrices
             # make it pretty and symmetrical
@@ -140,8 +159,9 @@ class Questions:
 
         na_sl_vs_hls = np.column_stack((np.array(l_sls), np.array(l_hls)))
 
-        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL  HL')
-    #
+        # using the function defined above
+        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL          HL', yticks=(ytick_ticks, ytick_labels))
+        plt.savefig('plots/q1_2.png', dpi=160, bbox_inches='tight')
 
     def q1_3(self):
         """
@@ -155,7 +175,6 @@ class Questions:
         :return: makes a heatmap
         """
         pass
-    #
 
     def q2(self):
         """
@@ -165,7 +184,6 @@ class Questions:
         :return: makes a heatmap
         """
         pass
-    #
 
     def q3(self):
         """
@@ -176,7 +194,6 @@ class Questions:
         :return:
         """
         pass
-    #
 
     def q4(self):
         """
@@ -187,7 +204,6 @@ class Questions:
         :return:
         """
         pass
-    #
 
     def q5(self):
         """
@@ -198,7 +214,6 @@ class Questions:
         :return:
         """
         pass
-    #
 
     def q6(self):
         """
@@ -209,22 +224,18 @@ class Questions:
         :return:
         """
         pass
-#
 
 
 if __name__ == '__main__':
-
     # path to files
     # TODO change
-    s_path = "/Users/ ... path ... /GibData"
+    s_path = os.path.dirname(__name__)
     s_path_data = os.path.join(s_path, "data")
 
-    s_data_fname = os.path.join(s_path_data, 'c2018_v2.csv')
+    s_cached_data_fname = os.path.join(s_path_data, 'cached_data.json')
 
-    df_data = pd.read_csv(s_data_fname)
-
-    Q_ib2018 = Questions(df_data)
+    with open(s_cached_data_fname) as f:
+        Q_ib2018 = Questions(json.load(f))
 
     Q_ib2018.q1_1()
-
-#
+    Q_ib2018.q1_2()
