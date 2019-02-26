@@ -507,10 +507,8 @@ class CleanData:
 
 
 if __name__ == '__main__':
-
     # path to files
-    # TODO change
-    s_path = "/Users/ ... path ... /GibData"
+    s_path = os.path.dirname(__file__)
     s_path_data = os.path.join(s_path, "data")
 
     s_data_fname = os.path.join(s_path_data, 'c2018_v2.csv')
