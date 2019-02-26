@@ -70,3 +70,16 @@ if __name__ == '__main__':
         labelbottom=False)
 
     plt.show()
+
+    # TODO: make heatmap prettier maybe invert SLs so that it goes
+    # TODO: 'np.nan, 49, 58, 28' instead of '28, 58, 49, np.nan' so that
+    # TODO: there is no awkward white space in the middle
+
+    # No... in conclusion heatmap doesnt seem to show such a correlation
+
+
+    #####
+    # Q2
+    # Are there trends in terms of taking more languages at HL vs. taking more math or science classes at HL?
+
+    # ...
