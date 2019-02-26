@@ -86,13 +86,8 @@ class Data:
 
         for idx, row in self.df_data.iterrows():
             i_id = row['Registration number']
-            if i_id == i_student_id:
+            if i_id == i_student_id and row['Level'] != 'EE':
                 set_subjects.add(row['Subject'])
-
-        # for one person taking World Studies, pop this item
-        # TODO should find better way to handle this
-        if 'WORLD STUDIES' in set_subjects:
-            set_subjects.remove('WORLD STUDIES')
 
         l_student_subjects = list(set_subjects)
         return l_student_subjects
