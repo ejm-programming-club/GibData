@@ -1,0 +1,59 @@
+(words marked with * * mean there is another
+name there instead)
+
+{
+*studentID1*:
+    {
+    school: 'schoolID',
+
+    *subject1*: {
+        level: 'SL' or 'HL',
+        grade: integer out of 7,
+        total_mark: integer out of 100,
+        language: 'ENGLISH', 'FRENCH', etc,
+        *component1*: {
+            grade: integer out of 7, None otherwise,
+            mark: integer marks
+            },
+        *component2* { ... }
+        },
+
+    *subject2*: {
+        ...
+    },
+
+    EE: {
+        subject: str name of subject,
+        letter_grade: 'A', 'B', 'C', ...,
+        total_mark: integer out of 34,
+        language: 'ENGLISH', etc,
+        },
+
+    TOK: {
+        letter_grade: 'A', 'B', 'C', ...,
+        total_mark: integer out of 30,
+        language: 'ENGLISH', etc,
+        essay: {
+            mark: mark out of 10, times 2,
+            letter_grade: 'A', 'B', ...
+            },
+        presentation: {
+            mark: mark out of 10,
+            letter_grade: 'A', 'B', ...
+            }
+        },
+
+    core_pt: 0, 1, 2, or 3
+    },
+
+*studentID2*: { ... }
+
+...
+
+}
+
+*studentID* is an integer ID number
+*subject* is the name of the subject,
+    for example 'BIOLOGY'
+*component* is the name of the component,
+    for example 'PAPER ONE'
