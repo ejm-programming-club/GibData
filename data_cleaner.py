@@ -496,6 +496,6 @@ if __name__ == '__main__':
 
     df_data = pd.read_csv(s_data_fname)
 
-    d_ib2018 = CleanData(df_data)
+    CD_ib2018 = CleanData(df_data)
 
-    print(d_ib2018.d_students[1])
+    print(CD_ib2018.d_students[1])

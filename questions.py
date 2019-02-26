@@ -12,14 +12,14 @@ if __name__ == '__main__':
 
     # path to files
     # TODO change
-    s_path = "/Users/liliaevgeniou/Desktop/Python/Misc/GibData"
+    s_path = "/Users/ ... path ... /GibData"
     s_path_data = os.path.join(s_path, "data")
 
     s_data_fname = os.path.join(s_path_data, 'c2018_v2.csv')
 
     df_data = pd.read_csv(s_data_fname)
 
-    d_ib2018 = CleanData(df_data)
+    CD_ib2018 = CleanData(df_data)
 
 
     #####
@@ -29,25 +29,25 @@ if __name__ == '__main__':
     hls = []
     sls = []
 
-    for student in d_ib2018.l_students:
+    for student in CD_ib2018.l_students:
         #print()
         #print(student)
         hl_subs = []
         sl_subs = []
-        for subject in d_ib2018.d_students[student]:
+        for subject in CD_ib2018.d_students[student]:
             if subject in ('school', 'EE', 'TOK', 'core_pt'):
                 continue
 
             #print(subject)
-            if d_ib2018.d_students[student][subject]['level'] == 'HL':
-                hl_subs.append(d_ib2018.d_students[student][subject]['total_mark'])
-            if d_ib2018.d_students[student][subject]['level'] == 'SL':
-                sl_subs.append(d_ib2018.d_students[student][subject]['total_mark'])
+            if CD_ib2018.d_students[student][subject]['level'] == 'HL':
+                hl_subs.append(CD_ib2018.d_students[student][subject]['total_mark'])
+            if CD_ib2018.d_students[student][subject]['level'] == 'SL':
+                sl_subs.append(CD_ib2018.d_students[student][subject]['total_mark'])
 
         while len(hl_subs) < 4:
             hl_subs.append(np.nan)
         while len(sl_subs) < 4:
-            sl_subs.append(np.nan)
+            sl_subs.insert(0, np.nan)
 
         hls.append(hl_subs)
         sls.append(sl_subs)
@@ -70,10 +70,6 @@ if __name__ == '__main__':
         labelbottom=False)
 
     plt.show()
-
-    # TODO: make heatmap prettier maybe invert SLs so that it goes
-    # TODO: 'np.nan, 49, 58, 28' instead of '28, 58, 49, np.nan' so that
-    # TODO: there is no awkward white space in the middle
 
     # No... in conclusion heatmap doesnt seem to show such a correlation
 
