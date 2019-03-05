@@ -1,5 +1,6 @@
 import os
 import json
+from tqdm import tqdm
 import numpy as np
 from matplotlib import pyplot as plt
 from data_cleaner import CleanData
@@ -7,14 +8,17 @@ from data_cleaner import CleanData
 plt.rcParams['figure.figsize'] = (50, 25)
 
 
-def heatmap(na_data, f_vline_pos, ylab, xlab, yticks=None):
+def heatmap(na_data, f_vline_pos, ylab, xlab, s_fname, yticks=None):
     """
     Makes a heatmap
+    Then saves it in "plots" folder
 
     :param na_data: rectangular ndarray matrix
     :param f_vline_pos: line separating 2 things being compared
-    :param ylab: label on y-axis
-    :param xlab: label on x-axis
+    :param ylab: str label on y-axis
+    :param xlab: str label on x-axis
+    :param s_fname: str name of file
+    :param yticks: ticks on y-axis
     """
 
     fig, ax = plt.subplots()
@@ -42,6 +46,8 @@ def heatmap(na_data, f_vline_pos, ylab, xlab, yticks=None):
 
     if yticks is not None:
         plt.yticks(*yticks)
+
+    plt.savefig(f'plots/{s_fname}.png', dpi=160, bbox_inches='tight')
 
     return fig
 
@@ -107,8 +113,8 @@ class Questions:
         na_sl_vs_hls = np.column_stack((np.array(l_sls), np.array(l_hls)))
 
         # using the function defined above
-        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL          HL', yticks=(ytick_ticks, ytick_labels))
-        plt.savefig('plots/q1_1.png', dpi=160, bbox_inches='tight')
+        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL               HL', s_fname='q1_1',
+                yticks=(ytick_ticks, ytick_labels))
 
     def q1_2(self):
         """
@@ -160,8 +166,8 @@ class Questions:
         na_sl_vs_hls = np.column_stack((np.array(l_sls), np.array(l_hls)))
 
         # using the function defined above
-        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL          HL', yticks=(ytick_ticks, ytick_labels))
-        plt.savefig('plots/q1_2.png', dpi=160, bbox_inches='tight')
+        heatmap(na_sl_vs_hls, 3.5, ylab='Student ID number', xlab=' SL               HL', s_fname='q1_2',
+                yticks=(ytick_ticks, ytick_labels))
 
     def q1_3(self):
         """
