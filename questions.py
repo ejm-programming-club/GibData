@@ -210,16 +210,28 @@ class Questions:
 
         :return:
         """
+
         pass
 
-    def q5(self):
+    def q5(self, t_component1, t_component2):
         """
         Are there certain component results that don't fit the rest of the data?
         For example, do French B orals seem low compared to the other components
         such as the written task or the exam papers?
+        COMPONENTS
 
-        :return:
+        components written as: (subject, component)
+        :return: graph
         """
+        s_sub1, s_comp1 = t_component1
+        s_sub2, s_comp2 = t_component2
+
+        l_sub1students = self.CD.get_students_doing(s_sub1)
+        l_sub2students = self.CD.get_students_doing(s_sub2)
+
+        for student in l_sub1students:
+            pass
+        #TODO Finish this off
         pass
 
     def q6(self):
