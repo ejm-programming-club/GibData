@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from data_cleaner import CleanData
 
-plt.rcParams['figure.figsize'] = (50, 25)
+# plt.rcParams['figure.figsize'] = (50, 25)
 
 
 def heatmap(na_data, f_vline_pos, ylab, xlab, s_fname, yticks=None):
@@ -80,7 +80,8 @@ class Questions:
 
         ytick_ticks = []
         ytick_labels = []
-        for i_student in range(min(self.CD.l_students), max(self.CD.l_students) + 1):
+        for i_student in sorted(set(range(min(self.CD.l_students), max(self.CD.l_students) + 1)) - {33, 40},
+                                key=lambda id_: self.CD.get_student_grade_out_of_45(id_)):
             # HL and SL marks for student
             l_hl_subs = []
             l_sl_subs = []
