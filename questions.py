@@ -1,8 +1,10 @@
 import os
 import json
-from tqdm import tqdm
 import numpy as np
+from tqdm import tqdm
+from scipy.stats import linregress
 from matplotlib import pyplot as plt
+
 from data_cleaner import CleanData
 
 # plt.rcParams['figure.figsize'] = (50, 25)
@@ -213,26 +215,60 @@ class Questions:
 
         pass
 
-    def q5(self, t_component1, t_component2):
+    def q5(self):
         """
         Are there certain component results that don't fit the rest of the data?
         For example, do French B orals seem low compared to the other components
         such as the written task or the exam papers?
-        COMPONENTS
 
-        components written as: (subject, component)
+        COMPONENTS only from one subject
+
+        USES INPUTS!
+
+        This does not separate SL from HLs
         :return: graph
         """
-        s_sub1, s_comp1 = t_component1
-        s_sub2, s_comp2 = t_component2
 
-        l_sub1students = self.CD.get_students_doing(s_sub1)
-        l_sub2students = self.CD.get_students_doing(s_sub2)
+        # find the list of subjects for input
+        s_subs = "\n".join(map(str, self.CD.get_subjects_taken()))
+        s_subject = input(f"\nPlease choose between the following subjects\n(and type in exactly as shown):\n{s_subs}\n")
 
-        for student in l_sub1students:
-            pass
-        #TODO Finish this off
-        pass
+        s_yn = input("\nWould you like to look at HL components (comparing only HL students)? y/n\n")
+        b_hl = True if s_yn.lower() == "y" else False
+
+        # find the list of components for input
+        s_comps = "\n".join(map(str, self.CD.get_subject_components(s_subject, b_hl)))
+        s_component1 = input(f"\nPlease choose between the following components\n(and type in exactly as shown):\n{s_comps}\n")
+        s_component2 = input(f"\nPlease choose another component between the following components\n(and type in exactly as shown):\n{s_comps}\n")
+
+        l_substudents = self.CD.get_students_doing(s_subject)
+        # if looking at only HL students
+        if b_hl:
+            l_substudents = [i for i in l_substudents if self.CD.d_students[i][s_subject]["level"] == "HL"]
+
+        l_comp1 = []
+        l_comp2 = []
+
+        for student in l_substudents:
+            l_comp1 += [self.CD.d_students[student][s_subject][s_component1]["mark"]]
+            l_comp2 += [self.CD.d_students[student][s_subject][s_component2]["mark"]]
+
+        slope, intercept, r_value, _, stderr = linregress(l_comp1, l_comp2)
+
+        plt.figure()
+        plt.plot(l_comp1, l_comp2, ".")
+
+        xmin, xmax = plt.xlim()
+        xs = np.linspace(0, xmax)
+        ys = slope * xs + intercept
+        plt.plot(xs, ys, "C0-", label=f"{round(slope, 1)}x + {round(intercept, 2)}, R$^2$={r_value**2:.3f}")
+        plt.xlim(0, xmax)
+        plt.legend()
+
+        plt.xlabel(f"{s_component1}")
+        plt.ylabel(f"{s_component2}")
+        plt.title(f"{s_subject}")
+        plt.show()
 
     def q6(self):
         """
@@ -247,7 +283,6 @@ class Questions:
 
 if __name__ == '__main__':
     # path to files
-    # TODO change
     s_path = os.path.dirname(__name__)
     s_path_data = os.path.join(s_path, "data")
 
@@ -258,3 +293,4 @@ if __name__ == '__main__':
 
     Q_ib2018.q1_1()
     Q_ib2018.q1_2()
+    Q_ib2018.q5()

@@ -444,6 +444,56 @@ class CleanData:
                 l_students_doing.append(i_student)
         return l_students_doing
 
+    def get_subjects_taken(self):
+        """
+        Gets all subject names which are taken
+        by students in the dataset.
+        :return: a set of str names of subjects
+        """
+        set_subs = set()
+
+        for student in self.l_students:
+            set_subs |= set(self.d_students[student].keys())
+
+        set_subs.remove("TOK")
+        set_subs.remove("EE")
+        set_subs.remove("school")
+        set_subs.remove("core_pt")
+
+        return set_subs
+
+    def get_subject_components(self, s_subject, b_hl):
+        """
+        Gets the names of the components of a
+        particular subject.
+        :param s_subject: str of subject name
+        :param b_hl: True if want to give HL components
+        :return: a set of str names of components
+        """
+        set_components = set()
+
+        for student in self.l_students:
+            d_st = self.d_students[student]
+            if s_subject in d_st.keys():
+                # if want to look at HL components
+                if d_st[s_subject]["level"] == "HL" and b_hl:
+                    set_components |= set(d_st[s_subject].keys())
+                    break
+                # if want to look at SL components
+                elif d_st[s_subject]["level"] == "SL" and not b_hl:
+                    set_components |= set(d_st[s_subject].keys())
+                    break
+        else:
+            raise ValueError("CleanData method get_subject_components: error")
+
+        # remove all keys which are not component names
+        set_components.remove("level")
+        set_components.remove("grade")
+        set_components.remove("total_mark")
+        set_components.remove("language")
+
+        return set_components
+
     def get_student_grade_out_of_42(self, i_student: int) -> int:
         """
         Gets the total grade (out of 42)
