@@ -217,7 +217,7 @@ class Questions:
 
         pass
 
-    def q5(self):
+    def q5(self, s_subject, b_hl, s_component1, s_component2):
         """
         Are there certain component results that don't fit the rest of the data?
         For example, do French B orals seem low compared to the other components
@@ -231,17 +231,17 @@ class Questions:
         :return: graph
         """
 
-        # find the list of subjects for input
-        s_subs = "\n".join(map(str, self.CD.get_subjects_taken()))
-        s_subject = input(f"\nPlease choose between the following subjects\n(and type in exactly as shown):\n{s_subs}\n")
-
-        s_yn = input("\nWould you like to look at HL components (comparing only HL students)? y/n\n")
-        b_hl = True if s_yn.lower() == "y" else False
-
-        # find the list of components for input
-        s_comps = "\n".join(map(str, self.CD.get_subject_components(s_subject, b_hl)))
-        s_component1 = input(f"\nPlease choose between the following components\n(and type in exactly as shown):\n{s_comps}\n")
-        s_component2 = input(f"\nPlease choose another component between the following components\n(and type in exactly as shown):\n{s_comps}\n")
+        # # find the list of subjects for input
+        # s_subs = "\n".join(map(str, self.CD.get_subjects_taken()))
+        # s_subject = input(f"\nPlease choose between the following subjects\n(and type in exactly as shown):\n{s_subs}\n")
+        #
+        # s_yn = input("\nWould you like to look at HL components (comparing only HL students)? y/n\n")
+        # b_hl = True if s_yn.lower() == "y" else False
+        #
+        # # find the list of components for input
+        # s_comps = "\n".join(map(str, self.CD.get_subject_components(s_subject, b_hl)))
+        # s_component1 = input(f"\nPlease choose between the following components\n(and type in exactly as shown):\n{s_comps}\n")
+        # s_component2 = input(f"\nPlease choose another component between the following components\n(and type in exactly as shown):\n{s_comps}\n")
 
         l_substudents = self.CD.get_students_doing(s_subject)
         # if looking at only HL students
@@ -255,22 +255,26 @@ class Questions:
             l_comp1 += [self.CD.d_students[student][s_subject][s_component1]["mark"]]
             l_comp2 += [self.CD.d_students[student][s_subject][s_component2]["mark"]]
 
+
         slope, intercept, r_value, _, stderr = linregress(l_comp1, l_comp2)
 
-        plt.figure()
-        plt.plot(l_comp1, l_comp2, ".")
+        return l_comp1, l_comp2, slope, intercept, r_value**2
 
+
+        # plt.figure()
+        # plt.plot(l_comp1, l_comp2, ".")
+        #
         xmin, xmax = plt.xlim()
         xs = np.linspace(0, xmax)
         ys = slope * xs + intercept
-        plt.plot(xs, ys, "C0-", label=f"{round(slope, 1)}x + {round(intercept, 2)}, R$^2$={r_value**2:.3f}")
-        plt.xlim(0, xmax)
-        plt.legend()
-
-        plt.xlabel(f"{s_component1}")
-        plt.ylabel(f"{s_component2}")
-        plt.title(f"{s_subject}")
-        plt.show()
+        # plt.plot(xs, ys, "C0-", label=f"{round(slope, 1)}x + {round(intercept, 2)}, R$^2$={r_value**2:.3f}")
+        # plt.xlim(0, xmax)
+        # plt.legend()
+        #
+        # plt.xlabel(f"{s_component1}")
+        # plt.ylabel(f"{s_component2}")
+        # plt.title(f"{s_subject}")
+        # plt.show()
 
     def q6(self):
         """
