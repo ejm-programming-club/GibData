@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import os
 import json
 import numpy as np
@@ -278,7 +280,19 @@ class Questions:
 
         :return:
         """
-        pass
+        # TODO: add comparaison to the rest of the grades (to see if it stands out)
+
+        l_compare = defaultdict(list)
+
+        for i_student in self.CD.l_students:
+            ee_info = self.CD.d_students[i_student]["EE"]
+            subject_results = self.CD.d_students[i_student].get(ee_info["subject"])
+            if subject_results is not None:  # World Studies
+                l_compare[ee_info["subject"]].append(
+                    (ee_info["total_mark"], subject_results["total_mark"])
+                )
+
+        return l_compare
 
 
 if __name__ == '__main__':

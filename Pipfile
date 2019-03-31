@@ -8,6 +8,9 @@ numpy = "*"
 pandas = "*"
 tqdm = "*"
 matplotlib = "*"
+scipy = "*"
+dash = "*"
+dash-daq = "*"
 
 [dev-packages]
 
